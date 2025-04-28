@@ -96,7 +96,9 @@ public class AddPresetDialog(IBus bus, IDialogService dialogService,
                 return;
             }
 
-            dialogContext.MaxDateRegisterSaller = DateTime.Parse(result);
+            DateTime.TryParseExact(result, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date);
+
+            dialogContext.MaxDateRegisterSaller = date;
 
             await SendMessage(EditingNames.Preset.MIN_DATA_REGISTER_SELLER);
             dialogContext.LastRequest = EditingNames.Preset.MIN_DATA_REGISTER_SELLER;
@@ -115,7 +117,9 @@ public class AddPresetDialog(IBus bus, IDialogService dialogService,
                 return;
             }
 
-            dialogContext.MinDateRegisterSeller = DateTime.Parse(result);
+            DateTime.TryParseExact(result, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date);
+
+            dialogContext.MinDateRegisterSeller = date;
 
             await SendMessage(EditingNames.Preset.MAX_VIEWS_BY_OTHER_WORKERS);
             dialogContext.LastRequest = EditingNames.Preset.MAX_VIEWS_BY_OTHER_WORKERS;
