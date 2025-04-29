@@ -88,6 +88,8 @@ internal static class IServiceCollectionExtensions
 
         services.AddScoped<ICommand, BuyDaysCommand>();
 
+        services.AddScoped<ICommand, HelpCommand>();
+
         services.AddScoped<CommandExecutor>();
     }
 

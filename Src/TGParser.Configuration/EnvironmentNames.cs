@@ -11,6 +11,8 @@ internal static class EnvironmentNames
 
     public static readonly string CHECK_SUBSCRIBE_CHANNEL_NAME = nameof(CHECK_SUBSCRIBE_CHANNEL_NAME);
 
+    public static readonly string SUPPORT_NAME = nameof(SUPPORT_NAME);
+
     public static readonly string PRICE_ONE_DAY = nameof(PRICE_ONE_DAY);
     public static readonly string PRICE_SEVEN_DAYS = nameof(PRICE_SEVEN_DAYS);
     public static readonly string PRICE_ONE_MONTH = nameof(PRICE_ONE_MONTH);

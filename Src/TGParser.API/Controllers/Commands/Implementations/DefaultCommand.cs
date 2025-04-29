@@ -21,7 +21,7 @@ public class DefaultCommand(ITelegramBotClient client,
         [
             [CommandNames.SEARCH_WALLAPOP],
             [CommandNames.HELP, CommandNames.PROFILE],
-            [CommandNames.ABOUT]
+            //[CommandNames.ABOUT]
         ])
             {
                 ResizeKeyboard = true,

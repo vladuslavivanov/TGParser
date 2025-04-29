@@ -47,12 +47,6 @@ public class ProfileCommand(ITelegramBotClient client,
             text: defaultPresetSB.ToString(),
             replyMarkup: keyboard
             );
-
-        await client.SendMessage(
-            chatId: ChatId,
-            text: subscribeSB.ToString(),
-            replyMarkup: keyboard
-            );
     }
 
     string GetQuantitySubscribe(DateTime endDateSubscribe)

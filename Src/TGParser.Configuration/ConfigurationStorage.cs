@@ -48,6 +48,12 @@ public static class ConfigurationStorage
         return ConfigurationParser.GetValue<string>(EnvironmentNames.CHECK_SUBSCRIBE_CHANNEL_NAME, true);        
     }
 
+    public static string GetSupport()
+    {
+        return ConfigurationParser.GetValue<string>(EnvironmentNames.SUPPORT_NAME, true);
+
+    }
+
     public static PriceModel GetPrice()
     {
         int priceOneDay = ConfigurationParser.GetValue<int>(EnvironmentNames.PRICE_ONE_DAY, true);

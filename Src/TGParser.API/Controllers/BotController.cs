@@ -19,7 +19,7 @@ public class BotController(IBus bus, IDialogService dialogService, ITelegramUser
     {
         if(update.Type == UpdateType.Message)
         {
-            //if (!await service.IsUserSubscribed(update.Message!)) return Ok();
+            if (!await service.IsUserSubscribed(update.Message!)) return Ok();
 
             await service.AddUserIfNotExists(update.Message!);
 
