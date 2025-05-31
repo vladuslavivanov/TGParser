@@ -2,8 +2,8 @@
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using TGParser.API.Controllers.Commands;
 using TGParser.API.Controllers.Dialogs.Interfaces;
+using TGParser.API.Controllers.Messages.ChatShared;
 using TGParser.API.Services.Interfaces;
 using TGParser.BLL.Interfaces;
 using TGParser.Core.Enums;
@@ -34,7 +34,7 @@ public class RemoveProxyDialog(ITelegramBotClient client,
 
         if (dialogContext.DialogState == DialogState.FirstStep)
         {
-            if (await TryHandleUserLeaveAsync(nextCommandName: CommandNames.PROXIES))
+            if (await TryHandleUserLeaveAsync(nextCommandName: TextMessageNames.PROXIES))
                 return;
 
             await TryRemoveProxy();

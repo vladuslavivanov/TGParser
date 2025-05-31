@@ -7,9 +7,9 @@ using TGParser.Configuration.Models;
 using TGParser.Core.Enums;
 using TGParser.Configuration;
 using Telegram.Bot.Types.ReplyMarkups;
-using TGParser.API.Controllers.Commands;
 using CryptoPay.Types;
 using TGParser.API.Controllers.Dialogs.Contexts;
+using TGParser.API.Controllers.Messages.ChatShared;
 
 namespace TGParser.API.Controllers.Dialogs.Implementations;
 
@@ -40,7 +40,7 @@ public class BuyDaysDialog(ITelegramBotClient client, IBus bus,
         // Пользователь выбрал количество дней.
         if (dialogContext.DialogState == DialogState.FirstStep)
         {
-            if (await TryHandleUserLeaveAsync(nextCommandName: CommandNames.PROFILE)) return;
+            if (await TryHandleUserLeaveAsync(nextCommandName: TextMessageNames.PROFILE)) return;
 
             if (!ValidateUserWrite(message.Text!, out var selectedPrice))
             {

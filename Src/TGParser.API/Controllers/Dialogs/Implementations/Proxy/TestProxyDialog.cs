@@ -1,7 +1,6 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using TGParser.API.Controllers.Commands;
 using TGParser.API.Controllers.Dialogs.Interfaces;
 using TGParser.API.Services.Interfaces;
 using TGParser.BLL.Interfaces;
@@ -9,6 +8,7 @@ using TGParser.Core.Enums;
 using MassTransit;
 using TGParser.Core.Consts;
 using TGParser.Core.DTO;
+using TGParser.API.Controllers.Messages.ChatShared;
 
 namespace TGParser.API.Controllers.Dialogs.Implementations.Proxy;
 
@@ -37,7 +37,7 @@ public class TestProxyDialog(ITelegramBotClient client,
         // На данном этапе пользователь уже выбрал сущность.
         if (dialogContext.DialogState == DialogState.FirstStep)
         {
-            if (await TryHandleUserLeaveAsync(nextCommandName: CommandNames.PROXIES)) return;
+            if (await TryHandleUserLeaveAsync(nextCommandName: TextMessageNames.PROXIES)) return;
 
             var isParsed = int.TryParse(message.Text, out var idEntity);
 
@@ -60,7 +60,7 @@ public class TestProxyDialog(ITelegramBotClient client,
             
             Message!.Text = EditingNames.LEAVE;
 
-            await TryHandleUserLeaveAsync(nextCommandName: CommandNames.PROXIES);
+            await TryHandleUserLeaveAsync(nextCommandName: TextMessageNames.PROXIES);
             
             return;
         }

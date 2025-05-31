@@ -3,14 +3,13 @@ using System.Collections.Concurrent;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using TGParser.API.Controllers.Commands.Interfaces;
 using TGParser.API.MassTransit.Requsted;
 using TGParser.API.Services.Interfaces;
 using TGParser.Core.Enums;
 
 namespace TGParser.API.Controllers.Dialogs;
 
-public abstract class BaseDialog<T>(IBus bus, IDialogService dialogService, ITelegramBotClient client): BaseCommand where T : BaseContext
+public abstract class BaseDialog<T>(IBus bus, IDialogService dialogService, ITelegramBotClient client): BaseTelegramAction where T : BaseContext
 {
     protected static ConcurrentDictionary<long, T> _dialogContexts = new();
 

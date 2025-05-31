@@ -3,9 +3,9 @@ using System.Net;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using TGParser.API.Controllers.Commands;
 using TGParser.API.Controllers.Dialogs.Contexts;
 using TGParser.API.Controllers.Dialogs.Interfaces;
+using TGParser.API.Controllers.Messages.ChatShared;
 using TGParser.API.Services.Interfaces;
 using TGParser.BLL.Implementations;
 using TGParser.BLL.Interfaces;
@@ -29,7 +29,7 @@ public class AddProxyDialog(IBus bus, IDialogService dialogService,
     {
         SetContext(new() { Message = message });
 
-        await TryHandleUserLeaveAsync(nextCommandName: CommandNames.PROXIES);
+        await TryHandleUserLeaveAsync(nextCommandName: TextMessageNames.PROXIES);
 
         _dialogContexts.TryGetValue(UserId, out var dialogContext);
 
@@ -104,7 +104,7 @@ public class AddProxyDialog(IBus bus, IDialogService dialogService,
                 dialogContext.Password));
 
             Message.Text = EditingNames.LEAVE;
-            await TryHandleUserLeaveAsync(nextCommandName: CommandNames.PROXIES);
+            await TryHandleUserLeaveAsync(nextCommandName: TextMessageNames.PROXIES);
 
             return;
         }

@@ -3,9 +3,9 @@ using System.Globalization;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using TGParser.API.Controllers.Commands;
 using TGParser.API.Controllers.Dialogs.Contexts;
 using TGParser.API.Controllers.Dialogs.Interfaces;
+using TGParser.API.Controllers.Messages.ChatShared;
 using TGParser.API.MassTransit.Requsted;
 using TGParser.API.Services.Interfaces;
 using TGParser.BLL.Interfaces;
@@ -37,7 +37,7 @@ public class EditingPresetDialog(ITelegramBotClient client,
         // На данном этапе пользователь уже выбрал сущность.
         if (dialogContext.DialogState == DialogState.FirstStep)
         {
-            if (await TryHandleUserLeaveAsync(nextCommandName: CommandNames.PRESETS)) return;
+            if (await TryHandleUserLeaveAsync(nextCommandName: TextMessageNames.PRESETS)) return;
 
             var isParsed = int.TryParse(message.Text, out var idEntity);
 

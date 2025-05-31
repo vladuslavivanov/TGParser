@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System.Text;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using TGParser.Configuration;

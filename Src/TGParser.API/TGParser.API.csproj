@@ -18,7 +18,7 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="SocksSharp" Version="1.1.1" />
     <PackageReference Include="StackExchange.Redis" Version="2.8.31" />
-    <PackageReference Include="Telegram.Bot" Version="22.5.0" />
+    <PackageReference Include="Telegram.Bot" Version="22.5.1" />
   </ItemGroup>
 
   <ItemGroup>

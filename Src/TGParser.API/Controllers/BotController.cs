@@ -6,12 +6,17 @@ using TGParser.API.MassTransit.Requsted;
 using TGParser.API.Services.Interfaces;
 using TGParser.API.ActionFilters;
 using Telegram.Bot;
+using TGParser.API.Controllers.CallbackQueries;
 
 namespace TGParser.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-public class BotController(IBus bus, IDialogService dialogService, ITelegramUserService service, ITelegramBotClient client) : ControllerBase
+public class BotController(
+    IBus bus, 
+    IDialogService dialogService, 
+    ITelegramUserService service, 
+    CallbackQueryExecutor callbackQueryExecutor) : ControllerBase
 {
     [HttpPost]
     [CheckTelegramToken]
@@ -29,6 +34,10 @@ public class BotController(IBus bus, IDialogService dialogService, ITelegramUser
                 await bus.Publish(new RequestDialogCommand(update.Message));
             else
                 await bus.Publish(new RequestMessageCommand(update));
+        }
+        else if (update.Type == UpdateType.CallbackQuery)
+        {
+            await callbackQueryExecutor.Execute(update);
         }
 
         return Ok();

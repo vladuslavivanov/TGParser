@@ -3,9 +3,9 @@ using System.Globalization;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using TGParser.API.Controllers.Commands;
 using TGParser.API.Controllers.Dialogs.Contexts;
 using TGParser.API.Controllers.Dialogs.Interfaces;
+using TGParser.API.Controllers.Messages.ChatShared;
 using TGParser.API.Services.Interfaces;
 using TGParser.BLL.Interfaces;
 using TGParser.Core.Enums;
@@ -22,7 +22,7 @@ public class AddPresetDialog(IBus bus, IDialogService dialogService,
     {
         SetContext(new() { Message = message });
 
-        await TryHandleUserLeaveAsync(nextCommandName: CommandNames.PRESETS);
+        await TryHandleUserLeaveAsync(nextCommandName: TextMessageNames.PRESETS);
 
         _dialogContexts.TryGetValue(UserId, out var dialogContext);
 
@@ -233,7 +233,7 @@ public class AddPresetDialog(IBus bus, IDialogService dialogService,
                 dialogContext.PeriodSearch));
 
             Message.Text = EditingNames.LEAVE;
-            await TryHandleUserLeaveAsync(nextCommandName: CommandNames.PRESETS);
+            await TryHandleUserLeaveAsync(nextCommandName: TextMessageNames.PRESETS);
 
             return;
         }

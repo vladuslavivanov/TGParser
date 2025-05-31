@@ -12,7 +12,5 @@ public enum DialogType
     RemoveProxy,
     TestProxy,
 
-    SearchWallapop,
-
     BuyDays
 }

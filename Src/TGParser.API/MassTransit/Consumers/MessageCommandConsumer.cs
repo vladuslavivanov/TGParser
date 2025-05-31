@@ -1,6 +1,5 @@
 ﻿using MassTransit;
-using TGParser.API.Controllers.Commands;
-using TGParser.API.Controllers.Dialogs;
+using TGParser.API.Controllers.Messages;
 using TGParser.API.MassTransit.Requsted;
 namespace TGParser.API.MassTransit.Consumers;
 

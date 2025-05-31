@@ -2,8 +2,8 @@
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using TGParser.API.Controllers.Commands;
 using TGParser.API.Controllers.Dialogs.Interfaces;
+using TGParser.API.Controllers.Messages.ChatShared;
 using TGParser.API.Services.Interfaces;
 using TGParser.BLL.Interfaces;
 using TGParser.Core.Enums;
@@ -34,7 +34,7 @@ public class SetDefaultPresetDialog(ITelegramBotClient client,
 
         if (dialogContext.DialogState == DialogState.FirstStep)
         {
-            if (await TryHandleUserLeaveAsync(nextCommandName: CommandNames.PRESETS))
+            if (await TryHandleUserLeaveAsync(nextCommandName: TextMessageNames.PRESETS))
                 return;
 
             if (!await TrySetPreset())
@@ -44,7 +44,7 @@ public class SetDefaultPresetDialog(ITelegramBotClient client,
             else
             {
                 Message!.Text = EditingNames.LEAVE;
-                await TryHandleUserLeaveAsync(nextCommandName: CommandNames.PRESETS);
+                await TryHandleUserLeaveAsync(nextCommandName: TextMessageNames.PRESETS);
                 return;
             }
         }

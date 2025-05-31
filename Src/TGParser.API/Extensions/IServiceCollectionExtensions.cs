@@ -1,8 +1,5 @@
 ﻿using Telegram.Bot;
 using TGParser.Configuration;
-using TGParser.API.Controllers.Commands.Interfaces;
-using TGParser.API.Controllers.Commands;
-using TGParser.API.Controllers.Commands.Implementations;
 using Microsoft.EntityFrameworkCore;
 using TGParser.DAL;
 using TGParser.BLL.Interfaces;
@@ -14,13 +11,18 @@ using TGParser.API.Services.Interfaces;
 using TGParser.API.Controllers.Dialogs.Interfaces;
 using TGParser.API.Controllers.Dialogs.Implementations;
 using Serilog;
-using TGParser.API.Controllers.Commands.Implementations.Preset;
 using TGParser.API.Controllers.Dialogs.Implementations.Proxy;
 using TGParser.API.Controllers.Dialogs.Implementations.Preset;
-using TGParser.API.Controllers.Commands.Implementations.Proxy;
-using TGParser.API.Controllers.Commands.Implementations.Parsing;
-using TGParser.API.Controllers.Dialogs.Implementations.Parsing;
 using CryptoPay;
+using TGParser.API.Controllers.CallbackQueries;
+using TGParser.API.Controllers.CallbackQueries.Interfaces;
+using TGParser.API.Controllers.CallbackQueries.Implementations;
+using TGParser.API.Controllers.Messages.ChatShared.Implementations;
+using TGParser.API.Controllers.Messages.ChatShared.Implementations.Parsing;
+using TGParser.API.Controllers.Messages.ChatShared.Implementations.Preset;
+using TGParser.API.Controllers.Messages.ChatShared.Implementations.Proxy;
+using TGParser.API.Controllers.Messages;
+using TGParser.API.Controllers.Messages.Interfaces;
 
 namespace TGParser.API.Extensions;
 
@@ -30,7 +32,9 @@ internal static class IServiceCollectionExtensions
     {
         services.AddTelegramClient();
 
-        services.AddCommands();
+        services.AddCommandHandlers();
+        services.AddCallbackQueryHandlers();
+        services.AddChatSharedHandlers();
         services.AddDialogs();
         services.AddDbContext();
         services.AddManagers();
@@ -67,30 +71,44 @@ internal static class IServiceCollectionExtensions
         services.AddMemoryCache();
     }
 
-    static void AddCommands(this IServiceCollection services)
+    static void AddCommandHandlers(this IServiceCollection services)
     {
-        services.AddScoped<ICommand, DefaultCommand>();
-        services.AddScoped<ICommand, ProfileCommand>();
+        services.AddScoped<IMessage, DefaultCommand>();
+        services.AddScoped<IMessage, ProfileCommand>();
 
-        services.AddScoped<ICommand, PresetCommand>();
-        services.AddScoped<ICommand, AddPresetCommand>();
-        services.AddScoped<ICommand, RemovePresetCommand>();
-        services.AddScoped<ICommand, EditPresetCommand>();
-        services.AddScoped<ICommand, SetDefaultPreset>();
+        services.AddScoped<IMessage, PresetCommand>();
+        services.AddScoped<IMessage, AddPresetCommand>();
+        services.AddScoped<IMessage, RemovePresetCommand>();
+        services.AddScoped<IMessage, EditPresetCommand>();
+        services.AddScoped<IMessage, SetDefaultPreset>();
 
-        services.AddScoped<ICommand, ProxiesCommand>();
-        services.AddScoped<ICommand, AddProxyCommand>();
-        services.AddScoped<ICommand, EditProxyCommand>();
-        services.AddScoped<ICommand, RemoveProxyCommand>();
-        services.AddScoped<ICommand, TestProxyCommand>();
+        services.AddScoped<IMessage, ProxiesCommand>();
+        services.AddScoped<IMessage, AddProxyCommand>();
+        services.AddScoped<IMessage, EditProxyCommand>();
+        services.AddScoped<IMessage, RemoveProxyCommand>();
+        services.AddScoped<IMessage, TestProxyCommand>();
         
-        services.AddScoped<ICommand, SearchWallapopCommand>();
+        services.AddScoped<IMessage, SearchWallapopCommand>();
 
-        services.AddScoped<ICommand, BuyDaysCommand>();
+        services.AddScoped<IMessage, BuyDaysCommand>();
 
-        services.AddScoped<ICommand, HelpCommand>();
+        services.AddScoped<IMessage, HelpCommand>();
 
         services.AddScoped<CommandExecutor>();
+    }
+
+    static void AddCallbackQueryHandlers(this IServiceCollection services)
+    {
+        services.AddScoped<ICallbackQuery, TargetParserCallbackQuery>();
+        services.AddScoped<ICallbackQuery, ParseLimitCallbackQuery>();
+        services.AddScoped<ICallbackQuery, SearchAdvCallbackQuery>();
+
+        services.AddScoped<CallbackQueryExecutor>();
+    }
+
+    static void AddChatSharedHandlers(this IServiceCollection services)
+    {
+        services.AddScoped<IMessage, SelectUserForParseMessage>();
     }
 
     static void AddDialogs(this IServiceCollection services)
@@ -107,8 +125,6 @@ internal static class IServiceCollectionExtensions
         services.AddScoped<IDialog, RemoveProxyDialog>();
         services.AddScoped<IDialog, TestProxyDialog>();
         
-        services.AddScoped<IDialog, SearchWallapopDialog>();
-
         services.AddScoped<IDialog, BuyDaysDialog>();
     }
 
