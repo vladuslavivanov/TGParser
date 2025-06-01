@@ -1,4 +1,5 @@
-﻿using Telegram.Bot;
+﻿using MassTransit.Logging;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TGParser.API.Controllers.CallbackQueries.Interfaces;
@@ -22,8 +23,8 @@ public class SearchAdvCallbackQuery(
 
         var dataArray = CallbackQueryData!.Split("_");
 
-        var quantityAdv = int.Parse(dataArray[1]);
-        var userId = long.Parse(dataArray[2]);
+        var needSendAdv = int.Parse(dataArray[1]);
+        var parseToUserId = long.Parse(dataArray[2]);
         var query = dataArray[3] == "-" ? "" : dataArray[3];
 
         var proxy = await proxyService.GetAvailableProxyByUserId(UserId);
@@ -39,13 +40,13 @@ public class SearchAdvCallbackQuery(
 
         await client.EditMessageText(ChatId, (int)BotMessageId!, "✅ Парсинг начался");
 
-        int countAdv = 0;
+        int sentAdv = 0;
 
         string nextPage = "";
 
         Root? result = null;
 
-        while(countAdv < quantityAdv)
+        while(sentAdv < needSendAdv)
         {
             if (!string.IsNullOrEmpty(nextPage))
                 result = await searchWallapopService.SearchNext(nextPage, proxy);
@@ -56,12 +57,12 @@ public class SearchAdvCallbackQuery(
 
             if (items?.Count == default)
             {
-                if (countAdv == quantityAdv - quantityAdv)
+                if (sentAdv == needSendAdv - needSendAdv)
                     await client.SendMessage(ChatId,
                         "❌ По вашему запросу ничего не найдено");
-                else if (countAdv != quantityAdv)
+                else if (sentAdv != needSendAdv)
                     await client.SendMessage(ChatId,
-                        $"❌ По вашему запросу найдено {countAdv} объявлений");
+                        $"❌ По вашему запросу найдено {sentAdv} объявлений");
                 break;
             }
 
@@ -80,18 +81,22 @@ public class SearchAdvCallbackQuery(
                     if (ct.IsCancellationRequested)
                         return;
 
-                    var result = await searchWallapopService.FilterItem(item, selectedPreset, proxy);
+                    var result = await searchWallapopService.FilterItem(item, selectedPreset, proxy, ct);
                     if (result != default)
                     {
-                        Interlocked.Increment(ref countAdv);
-                        await client.SendPhoto(userId,
-                                item.Images.FirstOrDefault()?.Urls.Small ?? "",
-                                result.ToString(),
-                                ParseMode.Html,
-                                cancellationToken: ct
-                        );
-                        if (countAdv > quantityAdv)
+                        Interlocked.Increment(ref sentAdv);
+                        
+                        if (sentAdv > needSendAdv)
+                        {
                             linkedCts.Cancel();
+                        }
+
+                        await client.SendPhoto(parseToUserId,
+                                    item.Images.FirstOrDefault()?.Urls.Small ?? "",
+                                    result.ToString(),
+                                    ParseMode.Html,
+                                    cancellationToken: ct
+                            );
                     }
                 });
             }
@@ -101,7 +106,11 @@ public class SearchAdvCallbackQuery(
             }
         }
 
-
         await client.SendMessage(ChatId, "✅ Парсинг завершен");
+
+        if (UserId != parseToUserId)
+        {
+            await client.SendMessage(ChatId, $"Отправлено объявлений: {sentAdv}");
+        }
     }
 }

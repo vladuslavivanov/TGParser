@@ -100,9 +100,9 @@ public class SearchWallapopService(IProxyService proxyService) : ISearchWallapop
         return root;
     }
 
-    public async Task<ViewItemDto?> FilterItem(Item item, PresetDto? preset, ProxyDto proxy)
+    public async Task<ViewItemDto?> FilterItem(Item item, PresetDto? preset, ProxyDto proxy, CancellationToken token = default)
     {
-        var userInfo = await GetUserInfo(item.UserId, proxy);
+        var userInfo = await GetUserInfo(item.UserId, proxy, token);
 
         // Сколько у пользователя опубликовано в данный момент объявлений.
         var publish = userInfo.Stats.Counters.FirstOrDefault(c => c.Type == "publish")?.Value;
@@ -170,13 +170,13 @@ public class SearchWallapopService(IProxyService proxyService) : ISearchWallapop
                 modifiedDate);
     }
 
-    async Task<UserProfileV3> GetUserInfo(string userId, ProxyDto proxy)
+    async Task<UserProfileV3> GetUserInfo(string userId, ProxyDto proxy, CancellationToken token = default)
     {
         var userQuery = $"https://api.wallapop.com/api/v3/users/{userId}/";
         var userQueryStats = userQuery + "stats";
 
-        var jsonUserQuery = await proxyService.SendRequestThroughProxy(userQuery, proxy);
-        var jsonUserQueryStats = await proxyService.SendRequestThroughProxy(userQueryStats, proxy);
+        var jsonUserQuery = await proxyService.SendRequestThroughProxy(userQuery, proxy, token);
+        var jsonUserQueryStats = await proxyService.SendRequestThroughProxy(userQueryStats, proxy, token);
 
         UserProfileV3? userProfile = default;
         UserProfileV3Stats? userProfileStats = default;
