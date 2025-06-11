@@ -11,7 +11,7 @@ public static class TextMessageNames
 
     public static readonly string PRESETS = "🎛️ Пресеты 🎛️";
     public static readonly string PROXIES = "🌐 Прокси 🌐";
-    public static readonly string SET_DEFAULT_PRESET = "📌 Установить пресет по умолчанию 📌";
+    public static readonly string SET_DEFAULT_PRESET = "📌 Установить пресет для поиска 📌";
     public static readonly string BUY_DAYS = "💳 Оплатить подписку 💳";
     public static readonly string HOME = "🏠 Главное меню";
 

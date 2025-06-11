@@ -24,4 +24,12 @@ public static class Static
                 InlineKeyboardButton.WithCallbackData("🖊 Написать свой запрос [В разработке]", $"{CallbackQueryNames.SEARCH_MY_REQUEST}_{quantityAdv}_{userId}"),
             ]
         ]);
+
+    public static InlineKeyboardMarkup ActiveCancellationToken(string userId, string source) =>
+        new InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton.WithCallbackData("❌ Отмена", $"{CallbackQueryNames.ACTIVE_CANCELATION_TOKEN}_{userId}_{source}"),
+            ]
+        ]);
 }

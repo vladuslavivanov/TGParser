@@ -1,14 +1,14 @@
-﻿using MassTransit;
+﻿using Telegram.Bot;
 using Telegram.Bot.Types;
-using TGParser.API.Controllers.Messages.ChatShared;
+using Telegram.Bot.Types.ReplyMarkups;
+using TGParser.API.Controllers.CallbackQueries;
 using TGParser.API.Controllers.Messages.ChatShared.Interfaces;
-using TGParser.API.MassTransit.Requsted;
-using TGParser.API.Services.Interfaces;
-using TGParser.Core.Enums;
+using TGParser.BLL.Interfaces;
 
 namespace TGParser.API.Controllers.Messages.ChatShared.Implementations.Preset;
 
-public class SetDefaultPreset(IDialogService dialogService, IBus bus) : BaseTelegramAction, ITextMessage
+public class SetDefaultPreset(ITelegramBotClient client, 
+    IPresetManager presetManager) : BaseTelegramAction, ITextMessage
 {
     public string Name => TextMessageNames.SET_DEFAULT_PRESET;
 
@@ -16,10 +16,18 @@ public class SetDefaultPreset(IDialogService dialogService, IBus bus) : BaseTele
     {
         SetContext(update);
 
-        dialogService.SetUserDialog(UserId, DialogType.SetDefaultPreset);
+        var allPresets = (await presetManager
+             .GetAllPresetsByUserIdAsync(UserId)).OrderBy(o => o.ShowedId);
 
-        await bus.Publish(new RequestDialogCommand(update.Message!));
+        var keyboard = new InlineKeyboardMarkup(
+        [
+            allPresets.Select(p => InlineKeyboardButton.WithCallbackData(p.ShowedId.ToString(),
+                $"{CallbackQueryNames.SELECT_DEFAULT_PRESET}_{p.ShowedId}_{UserId}"))
+        ]);
 
-        return;
+        await client.SendMessage(
+            chatId: ChatId,
+            text: "Выберите пресет для поиска",
+            replyMarkup: keyboard);
     }
 }

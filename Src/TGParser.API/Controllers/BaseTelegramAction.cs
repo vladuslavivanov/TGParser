@@ -14,6 +14,7 @@ public class BaseTelegramAction
 
     protected int? BotMessageId { get; private set; }
     protected string? CallbackQueryData { get; private set; }
+    protected string? CallbackQueryId { get; private set; }
 
     protected void SetContext(Update update)
     {
@@ -34,6 +35,7 @@ public class BaseTelegramAction
                 Message = update.CallbackQuery.Message;
                 BotMessageId = update.CallbackQuery.Message.MessageId;
                 CallbackQueryData = update.CallbackQuery.Data;
+                CallbackQueryId = update.CallbackQuery.Id;
                 break;
             default:
                 break;

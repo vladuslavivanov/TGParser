@@ -50,7 +50,7 @@ public class UserPresetManager(DataContext dataContext) : IUserPresetManager
 
         if (newSelected == default) return false;
 
-        if (newSelected != default) newSelected.IsSelected = true;
+        newSelected.IsSelected = true;
 
         await dataContext.SaveChangesAsync();
 

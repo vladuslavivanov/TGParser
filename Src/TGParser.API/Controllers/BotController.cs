@@ -5,7 +5,6 @@ using Telegram.Bot.Types.Enums;
 using TGParser.API.MassTransit.Requsted;
 using TGParser.API.Services.Interfaces;
 using TGParser.API.ActionFilters;
-using Telegram.Bot;
 using TGParser.API.Controllers.CallbackQueries;
 
 namespace TGParser.API.Controllers;
@@ -49,5 +48,4 @@ public class BotController(
     {
         return Ok();
     }
-
 }

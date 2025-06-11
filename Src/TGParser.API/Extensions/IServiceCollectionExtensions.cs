@@ -102,6 +102,7 @@ internal static class IServiceCollectionExtensions
         services.AddScoped<ICallbackQuery, TargetParserCallbackQuery>();
         services.AddScoped<ICallbackQuery, ParseLimitCallbackQuery>();
         services.AddScoped<ICallbackQuery, SearchAdvCallbackQuery>();
+        services.AddScoped<ICallbackQuery, SelectDefaultPresetCallbackQuery>();
 
         services.AddScoped<CallbackQueryExecutor>();
     }
@@ -118,7 +119,6 @@ internal static class IServiceCollectionExtensions
         services.AddScoped<IDialog, AddPresetDialog>();
         services.AddScoped<IDialog, EditingPresetDialog>();
         services.AddScoped<IDialog, RemovePresetDialog>();
-        services.AddScoped<IDialog, SetDefaultPresetDialog>();
 
         services.AddScoped<IDialog, AddProxyDialog>();
         services.AddScoped<IDialog, EditingProxyDialog>();

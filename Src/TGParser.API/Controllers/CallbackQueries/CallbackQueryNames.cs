@@ -6,4 +6,6 @@ internal static class CallbackQueryNames
     public const string PARSE_LIMIT = "parselimit";
     public const string SEARCH_ADV = "searchadv";
     public const string SEARCH_MY_REQUEST = "searchmyrequest";
+    public const string ACTIVE_CANCELATION_TOKEN = "activect";
+    public const string SELECT_DEFAULT_PRESET = "selectdefaultpreset";
 }

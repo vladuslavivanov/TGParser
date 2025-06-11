@@ -10,7 +10,7 @@ public class PresetManager(DataContext dataContext) : IPresetManager
 {
     public async Task<IEnumerable<PresetDto>> GetAllPresetsByUserIdAsync(long userId)
     {
-        var userPresets = await dataContext.Presets.AsNoTracking()
+       var userPresets = await dataContext.Presets.AsNoTracking()
             .Include(i => i.UserPreset).Where(p => p.UserPreset.UserId == userId)
             .ToListAsync();
 
