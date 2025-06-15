@@ -1,9 +1,9 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using TGParser.API.Controllers.Messages.ChatShared;
+using TGParser.API.Controllers.CallbackQueries;
 using TGParser.API.Controllers.Messages.ChatShared.Interfaces;
-using TGParser.API.Services;
+using TGParser.API.Controllers.Messages.Helpers;
 using TGParser.BLL.Interfaces;
 
 namespace TGParser.API.Controllers.Messages.ChatShared.Implementations.Preset;
@@ -17,51 +17,25 @@ public class PresetCommand(ITelegramBotClient client,
     {
         SetContext(update);
 
-        var keyboard = new ReplyKeyboardMarkup(
-        [
-            [TextMessageNames.ADD_PRESET],
-            [TextMessageNames.EDIT_PRESET, TextMessageNames.REMOVE_PRESET],
-            [TextMessageNames.HOME]
-        ])
-        {
-            ResizeKeyboard = true,
-        };
-
         var presets = (await presetManager
-            .GetAllPresetsByUserIdAsync(UserId)).OrderBy(o => o.ShowedId);
+            .GetAllPresetsByUserIdAsync(UserId)).OrderBy(o => o.ShowedId)
+            .ToList();
 
-        //UserMessageDeletionCacheService.AddMessage(ChatId, MessageId);
-
-        if (presets == default || !presets.Any())
+        if (!presets.Any())
         {
-            var message = await client.SendMessage(
-               chatId: ChatId,
-               text: "🎛️ У Вас нет пресетов",
-               replyMarkup: keyboard
-            );
-
-            //await UserMessageDeletionCacheService.ClearMessages(client, ChatId);
-
-            //UserMessageDeletionCacheService.AddMessage(ChatId, message.Id);
+            await client.SendMessage(ChatId, "❌ Пресеты не найдены",
+                replyMarkup: new InlineKeyboardMarkup(
+                        InlineKeyboardButton.WithCallbackData("➕ Добавить новый пресет", 
+                            CallbackQueryNames.ADD_PRESET)));
             return;
         }
 
-        var messages = new List<Message>();
-
-        foreach (var item in presets)
-        {
-            var message = await client.SendMessage(
-                chatId: ChatId,
-                text: item.ToString(),
-                replyMarkup: keyboard
-                );
-
-            messages.Add(message);
-        }
-
-        //await UserMessageDeletionCacheService.ClearMessages(client, ChatId);
-
-        //messages.ForEach(m => UserMessageDeletionCacheService.AddMessage(ChatId, m.Id));
-
+        await client.SendMessage(
+            chatId: ChatId,
+            text: presets[0].ToString(),
+            replyMarkup: ConfigureReplyMarkupHelper
+                .ConfigureMarkupForPresets(presets[0].IsSelected, presets[0].ShowedId, 
+                presets.Count() >= 2 ? presets[1].ShowedId : null, null )
+            );
     }
 }

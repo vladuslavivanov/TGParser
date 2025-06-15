@@ -1,8 +1,12 @@
-﻿using Telegram.Bot.Types.ReplyMarkups;
+﻿using System.ComponentModel;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Reflection;
+using Telegram.Bot.Types.ReplyMarkups;
+using TGParser.Core.Enums;
 
 namespace TGParser.API.Controllers.CallbackQueries;
 
-public static class Static
+public static class CallbackQueryHelper
 {
     public static InlineKeyboardMarkup GetParseLimitInlineKeyboardMarkup(long userId) =>
         new InlineKeyboardMarkup(
@@ -32,4 +36,32 @@ public static class Static
                 InlineKeyboardButton.WithCallbackData("❌ Отмена", $"{CallbackQueryNames.ACTIVE_CANCELATION_TOKEN}_{userId}_{source}"),
             ]
         ]);
+
+    public static InlineKeyboardMarkup ConfigurePeriodSearchKeyboard(int presetId)
+    {
+        var values = Enum.GetValues<PeriodSearch>();
+        var enumType = typeof(PeriodSearch);
+
+        var inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        foreach (var value in values)
+        {
+            var memberInfo = enumType
+                .GetMember(value.ToString());
+
+            var enumValueMemberInfo = memberInfo
+                .FirstOrDefault(m => m.DeclaringType == enumType);
+
+            var valueAttributes = enumValueMemberInfo!
+                    .GetCustomAttribute<DescriptionAttribute>(false);
+
+            var description = valueAttributes!.Description;
+
+            inlineKeyboardMarkup.AddButton(InlineKeyboardButton.WithCallbackData(description, $"{CallbackQueryNames.SET_SEARCH_PERIOD_PRESET}_{presetId}_{value}"));
+        }
+
+        inlineKeyboardMarkup.AddNewRow(InlineKeyboardButton.WithCallbackData("◀️ Назад", $"{CallbackQueryNames.SHOW_PRESET}_{presetId}"));     
+
+        return inlineKeyboardMarkup;
+    }
 }

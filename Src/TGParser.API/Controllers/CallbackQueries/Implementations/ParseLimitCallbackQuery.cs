@@ -19,6 +19,6 @@ public class ParseLimitCallbackQuery(
         var userId = dataArray[2];
         
         await client.EditMessageText(ChatId, (int)BotMessageId!, "Выберите тип запроса", 
-            replyMarkup: Static.SelectActionPreParse(userId, quantityAdv));
+            replyMarkup: CallbackQueryHelper.SelectActionPreParse(userId, quantityAdv));
     }
 }

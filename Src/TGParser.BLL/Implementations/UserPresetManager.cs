@@ -19,6 +19,7 @@ public class UserPresetManager(DataContext dataContext) : IUserPresetManager
         return new PresetDto(
             userId,
             selectedPreset.UserPreset.ShowedId,
+            selectedPreset.UserPreset.IsSelected,
             selectedPreset.PresetName,
             selectedPreset.MinPrice,
             selectedPreset.MaxPrice,

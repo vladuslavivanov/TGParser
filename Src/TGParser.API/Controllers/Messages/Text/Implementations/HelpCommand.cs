@@ -1,7 +1,6 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using TGParser.API.Controllers.Messages.ChatShared;
 using TGParser.API.Controllers.Messages.ChatShared.Interfaces;
 using TGParser.Configuration;
 

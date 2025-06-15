@@ -6,11 +6,12 @@ namespace TGParser.Core.DTO;
 public record PresetDto(
     long UserId,
     int ShowedId,
+    bool IsSelected,
     string PresetName,
     int MinPrice,
     int MaxPrice,
     DateTime MinDateRegisterSeller,
-    DateTime MaxDateRegisterSaller,
+    DateTime MaxDateRegisterSeller,
     int MaxNumberOfPublishBySeller,
     int MaxNumberOfItemsSoldBySeller,
     int MaxNumberOfItemsBuysBySeller,
@@ -23,7 +24,7 @@ public record PresetDto(
 
         sb.AppendLine("👤 Информация о пресете:");
         sb.AppendLine($"№ Пресета - {ShowedId}");
-        sb.AppendLine($"Название пресета - {PresetName}");
+        //sb.AppendLine($"Название пресета - {PresetName}");
         sb.AppendLine($"Период поиска объявлений - {PeriodSearch}");
         
         sb.AppendLine();
@@ -36,7 +37,7 @@ public record PresetDto(
 
         sb.AppendLine("📅 Период регистрации продавца:");
         sb.AppendLine($"Дата мин. регистрации продавца - {MinDateRegisterSeller:dd.MM.yyyy}");
-        sb.AppendLine($"Дата макс. регистрации продавца - {MaxDateRegisterSaller:dd.MM.yyyy}");
+        sb.AppendLine($"Дата макс. регистрации продавца - {MaxDateRegisterSeller:dd.MM.yyyy}");
 
         sb.AppendLine();
 

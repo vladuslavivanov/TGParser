@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TGParser.BLL.Interfaces;
 using TGParser.Core.DTO;
+using TGParser.Core.Enums;
 using TGParser.DAL;
 using TGParser.DAL.Models;
 
@@ -16,7 +17,8 @@ public class PresetManager(DataContext dataContext) : IPresetManager
 
         return userPresets.Select(up => new PresetDto(
             userId, 
-            up.UserPreset.ShowedId, 
+            up.UserPreset.ShowedId,
+            up.UserPreset.IsSelected,
             up.PresetName, 
             up.MinPrice, 
             up.MaxPrice, 
@@ -29,7 +31,7 @@ public class PresetManager(DataContext dataContext) : IPresetManager
             up.PeriodSearch));
     }
 
-    public async Task AddPresetToUserAsync(long userId)
+    public async Task<int> AddPresetToUserAsync(long userId)
     {
         var showedId = await CalculateShowedId(userId);
 
@@ -37,7 +39,17 @@ public class PresetManager(DataContext dataContext) : IPresetManager
         { 
             Preset = new()
             {
-                PresetName = $"Новый пресет {showedId}"
+                PresetName = $"Пресет {showedId}",                
+                MinPrice = 0,
+                MaxPrice = 99999,
+                MaxViewsByOthersWorkers = 0,
+                MaxViewsOnSite = 10,
+                MinDateRegisterSeller = DateTime.MinValue,
+                MaxDateRegisterSeller = DateTime.MaxValue,
+                MaxNumberOfPublishBySeller = 10,
+                MaxNumbersOfItemsSoldBySeller = 10,
+                MaxNumberOfItemsBuysBySeller = 10,
+                PeriodSearch = Core.Enums.PeriodSearch.LAST24HOURS
             },
             UserId = userId,
             IsSelected = false, 
@@ -47,6 +59,8 @@ public class PresetManager(DataContext dataContext) : IPresetManager
         await dataContext.UserPresets.AddAsync(newUserPreset);
 
         await dataContext.SaveChangesAsync();
+
+        return newUserPreset.ShowedId;
     }
 
     public async Task<int> GetQuantityPresetsAsync(long userId)
@@ -75,6 +89,7 @@ public class PresetManager(DataContext dataContext) : IPresetManager
         return new PresetDto(
             userId,
             userPreset.UserPreset.ShowedId,
+            userPreset.UserPreset.IsSelected,
             userPreset.PresetName,
             userPreset.MinPrice,
             userPreset.MaxPrice,
@@ -159,5 +174,18 @@ public class PresetManager(DataContext dataContext) : IPresetManager
         var delta = sumFromMinToMax - allShowedIdsSum;
 
         return delta == 0 ? ++maxId : delta;
+    }
+
+    public async Task SetSearchPeriod(long userId, int presetShowId, PeriodSearch newPeriod)
+    {
+        var preset = await dataContext.Presets.Include(i => i.UserPreset)
+            .FirstOrDefaultAsync(p => p.UserPreset.UserId == userId && p.UserPreset.ShowedId == presetShowId);
+
+        if (preset == default)
+            return;
+
+        preset.PeriodSearch = newPeriod;
+
+        await dataContext.SaveChangesAsync();
     }
 }

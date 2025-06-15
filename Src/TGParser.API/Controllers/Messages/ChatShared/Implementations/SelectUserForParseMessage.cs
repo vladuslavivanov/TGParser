@@ -36,6 +36,6 @@ public class SelectUserForParseMessage(ITelegramBotClient client, IUserManager u
         );
 
         var message = await client.SendMessage(ChatId, "#️⃣ Выберите количество объявлений", 
-            replyMarkup: Static.GetParseLimitInlineKeyboardMarkup(userId));
+            replyMarkup: CallbackQueryHelper.GetParseLimitInlineKeyboardMarkup(userId));
     }
 }

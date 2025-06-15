@@ -23,6 +23,7 @@ using TGParser.API.Controllers.Messages.ChatShared.Implementations.Preset;
 using TGParser.API.Controllers.Messages.ChatShared.Implementations.Proxy;
 using TGParser.API.Controllers.Messages;
 using TGParser.API.Controllers.Messages.Interfaces;
+using TGParser.API.Controllers.CallbackQueries.Implementations.PresetImpl;
 
 namespace TGParser.API.Extensions;
 
@@ -102,7 +103,20 @@ internal static class IServiceCollectionExtensions
         services.AddScoped<ICallbackQuery, TargetParserCallbackQuery>();
         services.AddScoped<ICallbackQuery, ParseLimitCallbackQuery>();
         services.AddScoped<ICallbackQuery, SearchAdvCallbackQuery>();
+
         services.AddScoped<ICallbackQuery, SelectDefaultPresetCallbackQuery>();
+        services.AddScoped<ICallbackQuery, ShowPresetCallbackQuery>();
+        services.AddScoped<ICallbackQuery, AddPresetCallbackQuery>();
+        services.AddScoped<ICallbackQuery, EditPresetCallbackQuery>();
+
+        services.AddScoped<ICallbackQuery, EditSearchPeriodPresetCallbackQuery>();
+        services.AddScoped<ICallbackQuery, EditLimitionsPresetCallbackQuery>();
+        services.AddScoped<ICallbackQuery, EditPricePresetCallbackQuery>();
+        services.AddScoped<ICallbackQuery, EditRegistrationPresetCallbackQuery>();
+
+        services.AddScoped<ICallbackQuery, SetSearchPeriodPresetCallbackQuery>();
+        services.AddScoped<ICallbackQuery, EditPricePresetCallbackQuery>();
+        services.AddScoped<ICallbackQuery, SetPricePresetCallbackQuery>();
 
         services.AddScoped<CallbackQueryExecutor>();
     }

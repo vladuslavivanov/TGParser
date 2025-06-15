@@ -128,7 +128,7 @@ public class SearchWallapopService(IProxyService proxyService) : ISearchWallapop
         {
             bool isInRangeDateRegister =
                 registerDate >= preset.MinDateRegisterSeller
-                && registerDate <= preset.MaxDateRegisterSaller
+                && registerDate <= preset.MaxDateRegisterSeller
                 && publish <= preset.MaxNumberOfPublishBySeller
                 && sells <= preset.MaxNumberOfItemsSoldBySeller
                 && buys <= preset.MaxNumberOfItemsBuysBySeller;

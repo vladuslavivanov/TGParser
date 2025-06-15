@@ -18,7 +18,7 @@ public class TargetParserCallbackQuery(ITelegramBotClient client) : BaseTelegram
         if (callbackMessage == "myself")
         {
             await client.EditMessageText(ChatId, (int)BotMessageId!, "#️⃣ Выберите количество объявлений", 
-                replyMarkup: Static.GetParseLimitInlineKeyboardMarkup(UserId));
+                replyMarkup: CallbackQueryHelper.GetParseLimitInlineKeyboardMarkup(UserId));
         }
         else if(callbackMessage == "other")
         {
