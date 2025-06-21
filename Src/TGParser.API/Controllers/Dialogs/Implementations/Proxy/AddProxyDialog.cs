@@ -7,7 +7,6 @@ using TGParser.API.Controllers.Dialogs.Contexts;
 using TGParser.API.Controllers.Dialogs.Interfaces;
 using TGParser.API.Controllers.Messages.ChatShared;
 using TGParser.API.Services.Interfaces;
-using TGParser.BLL.Implementations;
 using TGParser.BLL.Interfaces;
 using TGParser.Core.Enums;
 
@@ -18,12 +17,6 @@ public class AddProxyDialog(IBus bus, IDialogService dialogService,
     BaseDialog<AddProxyContext>(bus, dialogService, client), IDialog
 {
     public DialogType DialogType => DialogType.AddProxy;
-
-    //List<string> editableProperties = typeof(EditingNames.Proxy)
-    //        .GetProperties()
-    //        .Where(prop => Attribute.IsDefined(prop, typeof(EditableAttribute)))
-    //        .Select(s => (string)s.GetRawConstantValue()!)
-    //        .ToList();
 
     public async Task Execute(Message message)
     {
@@ -36,72 +29,47 @@ public class AddProxyDialog(IBus bus, IDialogService dialogService,
         if (dialogContext == default)
             _dialogContexts[UserId] = dialogContext = new();
 
+
         if (dialogContext.DialogState == DialogState.FirstStep)
         {
-            await SendMessage(EditingNames.Proxy.IP);
-            dialogContext.LastRequest = EditingNames.Proxy.IP;
+            await SendMessage("Введите настройки прокси в формате 'IP:порт:логин:пароль'");
             dialogContext.DialogState++;
             return;
         }
 
         if (dialogContext.DialogState == DialogState.SecondStep)
         {
-            var error = ValidateValue(Message!.Text!, dialogContext.LastRequest, out string result);
+            var split = Message!.Text!.Split(':');
 
-            if (error != default)
+            if (split.Length != 4)
             {
-                await client.SendMessage(ChatId, error);
-                await SendMessage(EditingNames.Proxy.IP);
+                await SendMessage("Введите настройки прокси в формате 'IP:порт:логин:пароль'");
                 return;
             }
 
-            dialogContext.IP = result;
+            var isIp = IPAddress.TryParse(split[0], out var IP);
+            var isPort = int.TryParse(split[1], out var port);
+            var login = split[2];
+            var password = split[3];
 
-            await SendMessage(EditingNames.Proxy.PORT);
-            dialogContext.LastRequest = EditingNames.Proxy.PORT;
-            dialogContext.DialogState++;
-            return;
-        }
-
-        if (dialogContext.DialogState == DialogState.ThirdStep)
-        {
-            var error = ValidateValue(Message!.Text!, dialogContext.LastRequest, out string result);
-
-            if (error != default)
+            if (!isIp)
             {
-                await client.SendMessage(ChatId, error);
-                await SendMessage(EditingNames.Proxy.PORT);
+                await SendMessage("Введите IPv4, либо IPv6");
+                return;
+            }
+            if (!isPort) 
+            { 
+                await SendMessage("Введите число");
                 return;
             }
 
-            dialogContext.Port = int.Parse(result);
+            if (port < 1 || port > 65535)
+            {
+                await SendMessage("Порт может принимать значение от 1 до 65535");
+                return;
+            }
 
-            await SendMessage(EditingNames.Proxy.USER);
-            dialogContext.LastRequest = EditingNames.Proxy.USER;
-            dialogContext.DialogState++;
-            return;
-        }
-
-        if (dialogContext.DialogState == DialogState.FourthStep)
-        {
-            dialogContext.UserName = Message!.Text!;
-
-            await SendMessage(EditingNames.Proxy.PASSWORD);
-            dialogContext.LastRequest = EditingNames.Proxy.PASSWORD;
-            dialogContext.DialogState++;
-            return;
-        }
-
-        if (dialogContext.DialogState == DialogState.FifthStep)
-        {
-            dialogContext.Password = Message!.Text!;
-
-            await proxyManager.AddProxy(new(
-                UserId, 
-                dialogContext.IP, 
-                dialogContext.Port, 
-                dialogContext.UserName, 
-                dialogContext.Password));
+            await proxyManager.AddProxy(new(UserId, IP.ToString(), port, login, password));
 
             Message.Text = EditingNames.LEAVE;
             await TryHandleUserLeaveAsync(nextCommandName: TextMessageNames.PROXIES);
@@ -123,42 +91,5 @@ public class AddProxyDialog(IBus bus, IDialogService dialogService,
         await client.SendMessage(ChatId, 
             text,
             replyMarkup:keyboard);
-    }
-
-    string? ValidateValue(string value, string editingField, out string validateString)
-    {
-        string? errorMessage = null;
-
-        switch (editingField)
-        {
-            case EditingNames.Proxy.IP:
-                var isIp = IPAddress.TryParse(value, out var ip);
-                if (!isIp)
-                {
-                    errorMessage = "Введите IPv4, либо IPv6";
-                    break;
-                }
-                value = ip!.ToString();
-                break;
-
-            case EditingNames.Proxy.PORT:
-                if (!int.TryParse(value, out var port))
-                    errorMessage = "Введите число";
-                if (port < 1 || port > 65535)
-                    errorMessage = "Порт может принимать значение от 1 до 65535";
-                break;
-
-            case EditingNames.Proxy.PASSWORD:
-            case EditingNames.Proxy.USER:
-                break;
-
-            default:
-                errorMessage = "Непредвиденное свойство";
-                break;
-        }
-
-        validateString = value;
-
-        return errorMessage;
     }
 }
