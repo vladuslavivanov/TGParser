@@ -25,6 +25,8 @@ public class Program
         app.UseHttpsRedirection();
         app.MapControllers();
         app.UseCors("default");
+        
+        app.UseMiddleware<ExceptionTo200Middleware>();
 
         var webhook = ConfigurationStorage.GetWebhookApi();
         var secretToken = ConfigurationStorage.GetTelegramSecretToken();
