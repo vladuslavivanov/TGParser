@@ -1,11 +1,15 @@
-﻿using MassTransit;
+﻿using CryptoPay.Types;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
-using Telegram.Bot.Types;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Telegram.Bot.Types.Enums;
 using TGParser.API.MassTransit.Requsted;
 using TGParser.API.Services.Interfaces;
 using TGParser.API.ActionFilters;
 using TGParser.API.Controllers.CallbackQueries;
+using TGParser.BLL.Interfaces;
+using Update = Telegram.Bot.Types.Update;
 
 namespace TGParser.API.Controllers;
 
@@ -44,8 +48,42 @@ public class BotController(
 
     [HttpPost]
     [CheckCryptoBotToken]
-    public async Task<IActionResult> CryptoBot(CryptoPay.Types.Update update)
+    public async Task<IActionResult> CryptoBot(IInvoiceManager invoiceManager)
     {
-        return Ok();
+        using var reader = new StreamReader(Request.Body);
+        var body = await reader.ReadToEndAsync();
+        
+        var update = JsonConvert.DeserializeObject<CryptoPay.Types.Update>(body, new JsonSerializerSettings
+        {
+            ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new SnakeCaseNamingStrategy()
+            }
+        });
+        
+        if (update == null)
+            return BadRequest();
+        
+        if (update.Payload.Status != Statuses.paid)
+            return Ok();
+
+        var description = update.Payload.Description.Split('_');
+            
+        var quantityDays = int.Parse(description[0]);
+        var price = double.Parse(description[1]);
+        var userId = long.Parse(description[2]);
+
+        var currency = string.IsNullOrEmpty(update.Payload.Fiat) ? 
+            update.Payload.Asset : 
+            update.Payload.Fiat;
+        
+        await invoiceManager.AddInvoice(new(
+            currency, 
+            price, 
+            (DateTime)update.Payload.PaidAt!, 
+            quantityDays,
+            userId));
+        
+        return await Task.FromResult(Ok());
     }
 }

@@ -1,3 +1,3 @@
 ﻿namespace TGParser.Configuration.Models;
 
-public record PriceModel(int OneDay, int OneWeek, int OneMonth);
+public record PriceModel(double OneDay, double OneWeek, double OneMonth);

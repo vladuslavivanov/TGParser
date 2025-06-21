@@ -43,7 +43,7 @@ public class TelegramUserService(IUserManager userManager,
 
         if (TrialDays > 0)
         {
-            await userManager.AddSubscription(userId, TrialDays * 24);
+            await userManager.AddSubscription(userId, TrialDays);
         }
 
         await client.SendMessage(

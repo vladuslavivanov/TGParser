@@ -1,14 +1,14 @@
-﻿using MassTransit;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using TGParser.API.Controllers.CallbackQueries.Interfaces;
-using TGParser.API.MassTransit.Requsted;
+using TGParser.API.Controllers.Helpers;
 using TGParser.BLL.Interfaces;
 using TGParser.Core.Enums;
+using TGParser.Core.Enums.Presets;
 
 namespace TGParser.API.Controllers.CallbackQueries.Implementations.PresetImpl;
 
-public class SetSearchPeriodPresetCallbackQuery(IBus bus,
+public class SetSearchPeriodPresetCallbackQuery(ITelegramBotClient client,
     IPresetManager presetManager) : BaseTelegramAction, ICallbackQuery
 {
     public string Name => CallbackQueryNames.SET_SEARCH_PERIOD_PRESET;
@@ -17,15 +17,38 @@ public class SetSearchPeriodPresetCallbackQuery(IBus bus,
     {
         SetContext(update);
 
-        var splitData = CallbackQueryData!.Split('_');
+        var splitData = CallbackQueryData!.Split('_').ToList();
 
-        var presetId = splitData[1];
-        var newPeriodSearch = splitData[2];
+        var presetId = int.Parse(splitData[1]);
 
-        await presetManager.SetSearchPeriod(UserId, int.Parse(presetId), Enum.Parse<PeriodSearch>(newPeriodSearch));
+        var step = Enum.Parse<SetSearchPeriodStep>(splitData[2]);
 
-        update.CallbackQuery!.Data = $"{CallbackQueryNames.SHOW_PRESET}_{presetId}";
+        Enum.TryParse<PeriodSearch>(splitData.ElementAtOrDefault(3), out var newPeriodSearch);
 
-        await bus.Publish(new RequestBeginCallbackQuery(update));
+        switch (step)
+        {
+            case SetSearchPeriodStep.ShowVariously:
+                await ShowVariously(presetId);
+                break;
+            case SetSearchPeriodStep.SetSearchPeriod:
+                await SetSearchPeriod(presetId, newPeriodSearch);
+                break;
+        }        
+    }
+
+    async Task ShowVariously(int presetId)
+    {
+        var keyboardMarkup = CallbackQueryHelper.ConfigurePeriodSearchKeyboard(presetId);
+
+        await client.EditMessageReplyMarkup(ChatId, (int)BotMessageId!, keyboardMarkup);
+    }
+
+    async Task SetSearchPeriod(int presetId, PeriodSearch newPeriodSearch)
+    {
+        await presetManager.SetSearchPeriod(UserId, presetId, newPeriodSearch);
+
+        await UpdateMessageHelper.UpdateUserPreset(client, presetManager, UserId, presetId, (int)BotMessageId!, Message!.ReplyMarkup);
+
+        await client.AnswerCallbackQuery(CallbackQueryId!, "✅ Готово");
     }
 }

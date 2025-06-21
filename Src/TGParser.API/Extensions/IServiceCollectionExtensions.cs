@@ -62,8 +62,8 @@ internal static class IServiceCollectionExtensions
         {
             var apiToken = ConfigurationStorage.GetCryptoBotSecretToken();
 
-            //client.BaseAddress = new Uri("https://pay.crypt.bot/");
-            client.BaseAddress = new Uri("https://testnet-pay.crypt.bot/");
+            client.BaseAddress = new Uri("https://pay.crypt.bot/");
+            //client.BaseAddress = new Uri("https://testnet-pay.crypt.bot/");
             client.DefaultRequestHeaders.Add("Crypto-Pay-API-Token", apiToken);
 
             return new(client);
@@ -115,8 +115,8 @@ internal static class IServiceCollectionExtensions
         services.AddScoped<ICallbackQuery, SetRegistrationPresetCallbackQuery>();
 
         services.AddScoped<ICallbackQuery, SetSearchPeriodPresetCallbackQuery>();
-        services.AddScoped<ICallbackQuery, EditPricePresetCallbackQuery>();
         services.AddScoped<ICallbackQuery, SetPricePresetCallbackQuery>();
+        services.AddScoped<ICallbackQuery, BuyDaysCallbackQuery>();
 
         services.AddScoped<CallbackQueryExecutor>();
     }
@@ -138,8 +138,6 @@ internal static class IServiceCollectionExtensions
         services.AddScoped<IDialog, EditingProxyDialog>();
         services.AddScoped<IDialog, RemoveProxyDialog>();
         services.AddScoped<IDialog, TestProxyDialog>();
-        
-        services.AddScoped<IDialog, BuyDaysDialog>();
     }
 
     static void AddDbContext(this IServiceCollection services) 
@@ -182,6 +180,7 @@ internal static class IServiceCollectionExtensions
         Log.Logger = loggerConfiguration.CreateLogger();
     }
 
+    
     public static void ConfigureCors(this IServiceCollection services)
     {
         services.AddCors(options =>
@@ -203,5 +202,6 @@ internal static class IServiceCollectionExtensions
         services.AddTransient<IUserPresetManager, UserPresetManager>();
         services.AddTransient<IUserViewedItemsManager, UserViewedItemsManager>();
         services.AddTransient<IProxyManager, ProxyManager>();
+        services.AddTransient<IInvoiceManager, InvoiceManager>();
     }
 }

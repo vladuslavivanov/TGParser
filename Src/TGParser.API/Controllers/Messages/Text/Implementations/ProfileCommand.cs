@@ -22,7 +22,7 @@ public class ProfileCommand(ITelegramBotClient client,
         [
             [TextMessageNames.PRESETS, TextMessageNames.PROXIES],
             [TextMessageNames.SET_DEFAULT_PRESET],
-            // [CommandNames.BUY_DAYS],
+            [TextMessageNames.BUY_DAYS],
             [TextMessageNames.HOME],
         ])
         {

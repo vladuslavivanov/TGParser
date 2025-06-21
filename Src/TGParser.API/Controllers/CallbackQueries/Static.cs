@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
-using System.Data.Entity.Core.Metadata.Edm;
 using System.Reflection;
 using Telegram.Bot.Types.ReplyMarkups;
 using TGParser.Core.Enums;
+using TGParser.Core.Enums.Presets;
 
 namespace TGParser.API.Controllers.CallbackQueries;
 
@@ -57,10 +57,10 @@ public static class CallbackQueryHelper
 
             var description = valueAttributes!.Description;
 
-            inlineKeyboardMarkup.AddButton(InlineKeyboardButton.WithCallbackData(description, $"{CallbackQueryNames.SET_SEARCH_PERIOD_PRESET}_{presetId}_{value}"));
+            inlineKeyboardMarkup.AddButton(InlineKeyboardButton.WithCallbackData(description, $"{CallbackQueryNames.SET_SEARCH_PERIOD_PRESET}_{presetId}_{SetSearchPeriodStep.SetSearchPeriod}_{(int)value}"));
         }
 
-        inlineKeyboardMarkup.AddNewRow(InlineKeyboardButton.WithCallbackData("◀️ Назад", $"{CallbackQueryNames.SHOW_PRESET}_{presetId}"));     
+        inlineKeyboardMarkup.AddNewRow(InlineKeyboardButton.WithCallbackData("◀️ Назад", $"{CallbackQueryNames.EDIT_PRESET}_{presetId}"));     
 
         return inlineKeyboardMarkup;
     }

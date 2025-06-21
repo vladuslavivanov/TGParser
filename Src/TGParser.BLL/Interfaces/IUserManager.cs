@@ -8,5 +8,5 @@ public interface IUserManager
 
     Task<bool> CheckUserExists(long userId);
 
-    Task AddSubscription(long userId, int hours);
+    Task AddSubscription(long userId, int days);
 }

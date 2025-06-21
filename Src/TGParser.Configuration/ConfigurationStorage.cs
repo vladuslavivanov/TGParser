@@ -56,9 +56,9 @@ public static class ConfigurationStorage
 
     public static PriceModel GetPrice()
     {
-        int priceOneDay = ConfigurationParser.GetValue<int>(EnvironmentNames.PRICE_ONE_DAY, true);
-        int priceOneWeek = ConfigurationParser.GetValue<int>(EnvironmentNames.PRICE_SEVEN_DAYS, true);
-        int priceOneMonth = ConfigurationParser.GetValue<int>(EnvironmentNames.PRICE_ONE_MONTH, true);
+        var priceOneDay = ConfigurationParser.GetValue<double>(EnvironmentNames.PRICE_ONE_DAY, true);
+        var priceOneWeek = ConfigurationParser.GetValue<double>(EnvironmentNames.PRICE_SEVEN_DAYS, true);
+        var priceOneMonth = ConfigurationParser.GetValue<double>(EnvironmentNames.PRICE_ONE_MONTH, true);
 
         return new(priceOneDay, priceOneWeek, priceOneMonth);
     }

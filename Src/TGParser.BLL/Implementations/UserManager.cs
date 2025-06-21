@@ -35,13 +35,13 @@ public class UserManager(DataContext dataContext) : IUserManager
         await dataContext.SaveChangesAsync();
     }
 
-    public async Task AddSubscription(long userId, int hours)
+    public async Task AddSubscription(long userId, int days)
     {
         var user = await dataContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
 
         if (user == default) return;
 
-        user.SubscriptionEndDate = user.SubscriptionEndDate.AddHours(hours);
+        user.SubscriptionEndDate = user.SubscriptionEndDate.AddDays(days);
 
         await dataContext.SaveChangesAsync();
     }

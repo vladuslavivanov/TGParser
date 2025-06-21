@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using Newtonsoft.Json.Linq;
+using System.ComponentModel;
+using System.Reflection;
+using System.Text;
 using TGParser.Core.Enums;
 
 namespace TGParser.Core.DTO;
@@ -20,12 +23,25 @@ public record PresetDto(
 {
     public override string ToString()
     {
+        var enumType = typeof(PeriodSearch);
+
+        var memberInfo = enumType
+                .GetMember(PeriodSearch.ToString());
+
+        var enumValueMemberInfo = memberInfo
+            .FirstOrDefault(m => m.DeclaringType == enumType);
+
+        var valueAttributes = enumValueMemberInfo!
+                .GetCustomAttribute<DescriptionAttribute>(false);
+
+        var periodSearch = valueAttributes!.Description;
+
         StringBuilder sb = new();
 
         sb.AppendLine("👤 Информация о пресете:");
         sb.AppendLine($"№ Пресета - {ShowedId}");
         //sb.AppendLine($"Название пресета - {PresetName}");
-        sb.AppendLine($"Период поиска объявлений - {PeriodSearch}");
+        sb.AppendLine($"Период поиска объявлений - {periodSearch}");
         
         sb.AppendLine();
 
