@@ -1,6 +1,9 @@
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
+using TGParser.API.Extensions;
+using TGParser.API.Middleware;
 using TGParser.Configuration;
 using TGParser.DAL;
 using static TGParser.API.Extensions.IServiceCollectionExtensions;
@@ -11,8 +14,9 @@ public class Program
 {
     public async static Task Main(string[] args)
     {
+        ConfigureLogger();
+        
         var builder = WebApplication.CreateBuilder(args);
-        builder.ConfigureLogger();
         builder.Services.AddServiceCollections();
         builder.Services.ConfigureCors();
 
@@ -33,7 +37,6 @@ public class Program
                 UpdateType.ShippingQuery
             ], dropPendingUpdates: true,
             secretToken: secretToken);
-
 
         using (var scope = app.Services.CreateScope())
         {

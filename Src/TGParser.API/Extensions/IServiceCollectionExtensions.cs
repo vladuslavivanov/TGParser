@@ -167,14 +167,19 @@ internal static class IServiceCollectionExtensions
         var telegramBotClient = new TelegramBotClient(options);
         services.AddTransient<ITelegramBotClient>(services => telegramBotClient);
     }
-
-    public static void ConfigureLogger(this WebApplicationBuilder host)
+    
+    public static void ConfigureLogger()
     {
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .WriteTo.Console(
-            outputTemplate: "[{Timestamp:dd.MM.yyyy HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
-            .CreateLogger();
+        var loggerConfiguration = new LoggerConfiguration()
+            .Enrich.FromLogContext();
+
+        LoggingLevelSwitch levelSwitch = new(LogEventLevel.Verbose);
+
+        loggerConfiguration.MinimumLevel.ControlledBy(levelSwitch);
+
+        loggerConfiguration.WriteTo.Console(outputTemplate: "[{Timestamp:dd.MM.yyyy HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
+
+        Log.Logger = loggerConfiguration.CreateLogger();
     }
 
     public static void ConfigureCors(this IServiceCollection services)
