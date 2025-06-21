@@ -23,9 +23,14 @@ public class Invoice
     public DateTime PaidAt { get; set; }
 
     /// <summary>
+    /// Количество купленных дней.
+    /// </summary>
+    public int QuantityDays { get; set; }
+    
+    /// <summary>
     /// Идентификатор пользователя совершившего оплату.
     /// </summary>
-    public int UserId { get; set; }
+    public long UserId { get; set; }
 
     #region Nav Props
 

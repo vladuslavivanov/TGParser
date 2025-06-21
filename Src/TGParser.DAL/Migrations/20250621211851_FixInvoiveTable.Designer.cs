@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TGParser.DAL;
@@ -11,9 +12,11 @@ using TGParser.DAL;
 namespace TGParser.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250621211851_FixInvoiveTable")]
+    partial class FixInvoiveTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,9 +42,6 @@ namespace TGParser.DAL.Migrations
 
                     b.Property<DateTime>("PaidAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("QuantityDays")
-                        .HasColumnType("integer");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
