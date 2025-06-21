@@ -14,6 +14,8 @@ using Serilog;
 using TGParser.API.Controllers.Dialogs.Implementations.Proxy;
 using TGParser.API.Controllers.Dialogs.Implementations.Preset;
 using CryptoPay;
+using Serilog.Core;
+using Serilog.Events;
 using TGParser.API.Controllers.CallbackQueries;
 using TGParser.API.Controllers.CallbackQueries.Interfaces;
 using TGParser.API.Controllers.CallbackQueries.Implementations;
@@ -109,10 +111,8 @@ internal static class IServiceCollectionExtensions
         services.AddScoped<ICallbackQuery, AddPresetCallbackQuery>();
         services.AddScoped<ICallbackQuery, EditPresetCallbackQuery>();
 
-        services.AddScoped<ICallbackQuery, EditSearchPeriodPresetCallbackQuery>();
-        services.AddScoped<ICallbackQuery, EditLimitionsPresetCallbackQuery>();
-        services.AddScoped<ICallbackQuery, EditPricePresetCallbackQuery>();
-        services.AddScoped<ICallbackQuery, EditRegistrationPresetCallbackQuery>();
+        services.AddScoped<ICallbackQuery, SetLimitationsPresetCallbackQuery>();
+        services.AddScoped<ICallbackQuery, SetRegistrationPresetCallbackQuery>();
 
         services.AddScoped<ICallbackQuery, SetSearchPeriodPresetCallbackQuery>();
         services.AddScoped<ICallbackQuery, EditPricePresetCallbackQuery>();

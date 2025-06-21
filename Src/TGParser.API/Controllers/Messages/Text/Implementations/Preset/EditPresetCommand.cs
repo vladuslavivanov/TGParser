@@ -1,6 +1,5 @@
 ﻿using MassTransit;
 using Telegram.Bot.Types;
-using TGParser.API.Controllers.Messages.ChatShared;
 using TGParser.API.Controllers.Messages.ChatShared.Interfaces;
 using TGParser.API.MassTransit.Requsted;
 using TGParser.API.Services.Interfaces;

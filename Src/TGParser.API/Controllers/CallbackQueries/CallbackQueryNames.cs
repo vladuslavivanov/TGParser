@@ -17,6 +17,8 @@ internal static class CallbackQueryNames
     public const string EDIT_REGISTRATION_PRESET = "editregistrationspreset";
     public const string EDIT_LIMITIONS_PRESET = "editlimitionspreset";
 
+    public const string SET_REGISTRATION_PRESET = "setregistrationspreset";
+    public const string SET_LIMITATIONS_PRESET = "setlimitionspreset";
     public const string SET_SEARCH_PERIOD_PRESET = "setsearchperiodpreset";
     public const string SET_PRICE_PRESET = "setpricepreset";
 }

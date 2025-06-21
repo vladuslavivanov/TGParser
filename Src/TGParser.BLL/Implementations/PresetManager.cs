@@ -188,4 +188,58 @@ public class PresetManager(DataContext dataContext) : IPresetManager
 
         await dataContext.SaveChangesAsync();
     }
+
+    public async Task SetPrice(long userId, int presetShowId, PriceType typePrice, int price)
+    {
+        var preset = await dataContext.Presets.Include(i => i.UserPreset)
+            .FirstOrDefaultAsync(p => p.UserPreset.ShowedId == presetShowId);
+
+        if (preset == null) return;
+
+        _ = typePrice == PriceType.MinPrice ?
+                preset.MinPrice = price :
+                preset.MaxPrice = price;
+
+        await dataContext.SaveChangesAsync();
+    }
+
+    public async Task SetSellerRegistration(long userId, int presetShowId, RegistrationDataSellerType registrationType, DateTime date)
+    {
+        var preset = await dataContext.Presets.Include(i => i.UserPreset)
+           .FirstOrDefaultAsync(p => p.UserPreset.ShowedId == presetShowId);
+
+        if (preset == null) return;
+
+        _ = registrationType == RegistrationDataSellerType.Min ?
+                preset.MinDateRegisterSeller = date :
+                preset.MaxDateRegisterSeller = date;
+
+        await dataContext.SaveChangesAsync();
+    }
+
+    public async Task SetLimitation(long userId, int presetShowId, LimitationType limitationType, int newValue)
+    {
+        var preset = await dataContext.Presets.Include(i => i.UserPreset)
+           .FirstOrDefaultAsync(p => p.UserPreset.ShowedId == presetShowId);
+
+        if (preset == null) return;
+
+        switch (limitationType)
+        {
+            case LimitationType.QUANTITY_ADV_OTHER_VIEW:
+                preset.MaxViewsByOthersWorkers = newValue;
+                break;
+            case LimitationType.QUANTITY_OPEN_ADV:
+                preset.MaxNumberOfPublishBySeller = newValue;
+                break;
+            case LimitationType.QUANTITY_SELLED_ADV:
+                preset.MaxNumbersOfItemsSoldBySeller = newValue;
+                break;
+            case LimitationType.QUANTITY_BOUGHT_ADV:
+                preset.MaxNumberOfItemsBuysBySeller = newValue;
+                break;
+        }
+
+        await dataContext.SaveChangesAsync();
+    }
 }

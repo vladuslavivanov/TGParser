@@ -13,4 +13,7 @@ public interface IPresetManager
     Task<PresetDto?> GetPresetByShowedIdAsync(long userId, int showedId);
     Task UpdatePropertyInfoByPropertyName(long userId, int userShowedId, string propertyName, string value);
     Task SetSearchPeriod(long userId, int presetShowId, PeriodSearch newPeriod);
+    Task SetPrice(long userId, int presetShowId, PriceType typePrice, int price);
+    Task SetSellerRegistration(long userId, int presetShowId, RegistrationDataSellerType registrationType, DateTime date);
+    Task SetLimitation(long userId, int presetShowId, LimitationType limitationType, int newValue);
 }
