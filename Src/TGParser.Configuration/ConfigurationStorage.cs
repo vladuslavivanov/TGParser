@@ -33,6 +33,11 @@ public static class ConfigurationStorage
         return ConfigurationParser.GetValue<string>(EnvironmentNames.TELEGRAM_SECRET_TOKEN, true);
     }
 
+    public static string GetUnlimitToken()
+    {
+        return ConfigurationParser.GetValue<string>(EnvironmentNames.UNLIMIT_API_TOKEN, false, null);
+    }
+
     public static string GetCryptoBotSecretToken()
     {
         return ConfigurationParser.GetValue<string>(EnvironmentNames.CRYPTO_BOT_TOKEN, true);

@@ -14,6 +14,7 @@ using Serilog;
 using TGParser.API.Controllers.Dialogs.Implementations.Proxy;
 using TGParser.API.Controllers.Dialogs.Implementations.Preset;
 using CryptoPay;
+using Microsoft.OpenApi.Models;
 using Serilog.Core;
 using Serilog.Events;
 using TGParser.API.Controllers.CallbackQueries;
@@ -45,6 +46,30 @@ internal static class IServiceCollectionExtensions
         services.AddServices();
 
         services.AddControllers();
+
+        services.AddEndpointsApiExplorer();
+        
+        services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo()
+            {
+                Version = "v1",
+                Title = "Wallapop Parser API",
+                Description = "API для работы с Lapida Parser",
+                Contact = new OpenApiContact
+                {
+                    Name = "Поддержка",
+                    Url = new Uri("https://t.me/lapida_support")
+                }
+            });
+            
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename), includeControllerXmlComments: true);
+            
+            var coreXml = Path.Combine(AppContext.BaseDirectory, "TGParser.Core.xml");
+            options.IncludeXmlComments(coreXml, includeControllerXmlComments: true);
+        });
+        
         services.ConfigureTelegramBot<Microsoft.AspNetCore.Http.Json.JsonOptions>(opt => opt.SerializerOptions);
     }
 

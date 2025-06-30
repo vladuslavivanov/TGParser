@@ -1,11 +1,13 @@
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using TGParser.API.Extensions;
 using TGParser.API.Middleware;
 using TGParser.Configuration;
 using TGParser.DAL;
+using Microsoft.AspNetCore.OpenApi;
 using static TGParser.API.Extensions.IServiceCollectionExtensions;
 
 namespace TGParser.API;
@@ -25,6 +27,9 @@ public class Program
         app.UseHttpsRedirection();
         app.MapControllers();
         app.UseCors("default");
+        
+        app.UseSwagger();
+        app.UseSwaggerUI();
         
         app.UseMiddleware<ExceptionTo200Middleware>();
 

@@ -14,6 +14,7 @@ using Update = Telegram.Bot.Types.Update;
 namespace TGParser.API.Controllers;
 
 [ApiController]
+[ApiExplorerSettings(IgnoreApi = true)]
 [Route("api/[controller]/[action]")]
 public class BotController(
     IBus bus, 

@@ -1,29 +1,28 @@
 ﻿
 using Serilog;
+using TGParser.API.Attributes;
 
 namespace TGParser.API.Middleware;
 
-public class ExceptionTo200Middleware
+public class ExceptionTo200Middleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public ExceptionTo200Middleware(RequestDelegate next)
-    {
-        _next = next;
-    }
-
     public async Task Invoke(HttpContext context)
     {
         try
         {
-            await _next(context);
+            await next(context);
         }
         catch (Exception ex)
         {
-            context.Response.StatusCode = 200;
-            context.Response.ContentType = "application/json";
+            var endpoint = context.GetEndpoint();
 
-            Log.Error(ex, "Exception");
+            if (endpoint?.Metadata.GetMetadata<Skip200MiddlewareAttribute>() == null)
+            {
+                context.Response.StatusCode = 200;
+                context.Response.ContentType = "application/json";
+
+                Log.Error(ex, "Exception");
+            }
         }
     }
 }

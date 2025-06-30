@@ -6,6 +6,8 @@ internal static class EnvironmentNames
     public static readonly string TELEGRAM_HASH = nameof(TELEGRAM_HASH);
     public static readonly string TELEGRAM_WEBHOOK = nameof(TELEGRAM_WEBHOOK);
     public static readonly string TELEGRAM_SECRET_TOKEN = nameof(TELEGRAM_SECRET_TOKEN);
+    
+    public static readonly string UNLIMIT_API_TOKEN = nameof(UNLIMIT_API_TOKEN);
 
     public static readonly string CRYPTO_BOT_TOKEN = nameof(CRYPTO_BOT_TOKEN);
 
